@@ -2,7 +2,7 @@
   <div id="app">
     <HeaderComp @receiveString="searchQuery"/>
     <CardsContainer
-      mediaType="FIlm"
+      mediaType="Film"
       :mediaList="medias.movie"/>
     <CardsContainer
       mediaType="Serie TV"

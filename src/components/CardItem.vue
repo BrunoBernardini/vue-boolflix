@@ -1,7 +1,7 @@
 <template>
   <div
     class="card-item"
-    v-if="cardInfo.poster_path || cardInfo.title || cardInfo.original_title"
+    v-if="cardInfo.poster_path || titlesContainer.title || titlesContainer.original_title"
     :class="{'active':active}">
     <div class="card-inner">
       <div 
@@ -10,20 +10,23 @@
         <img
           v-if="cardInfo.poster_path"
           :src="`https://image.tmdb.org/t/p/w300/${cardInfo.poster_path}`"
-          :alt="cardInfo.title">
-        <h2 v-else>{{cardInfo.title}}</h2>
+          :alt="titlesContainer.title">
+        <h2 v-else>{{titlesContainer.title}}</h2>
       </div>
       <div
         class="card-back"
         @mouseleave="active = !active">
-        <h4>{{cardInfo.title}}</h4>
-        <p>Titolo originale: <span class="info">{{cardInfo.original_title}}</span></p>
+        <h4>{{titlesContainer.title}}</h4>
+        <p
+          v-if="titlesContainer.title !== titlesContainer.original_title">Titolo originale: <span class="info">{{titlesContainer.original_title}}</span></p>
         <p>Lingua: <img
                     class="info"
                     :src="`https://flagcdn.com/16x12/${flagID}.png`"
                     :alt="cardInfo.original_language.toUpperCase()"><br>
            Punteggio: <span class="info">{{cardInfo.vote_average}}</span> [{{cardInfo.vote_count}} voti]</p>
-        <p class="plot">Trama:<br>{{cardInfo.overview}}</p>
+        <p
+          class="plot"
+          v-if="cardInfo.overview">Trama:<br>{{cardInfo.overview}}</p>
       </div>
     </div>
   </div>
@@ -33,6 +36,7 @@
 export default {
   name: "CardItem",
   props: {
+    mediaType: String,
     cardInfo: Object
   },
   data(){
@@ -47,6 +51,21 @@ export default {
       }
       if(this.cardInfo.original_language in flagAlias) return flagAlias[this.cardInfo.original_language];
       else return this.cardInfo.original_language;
+    },
+    titlesContainer(){
+      const titlesObject = {
+        title: "",
+        original_title: ""
+      }
+      if(this.mediaType==="Film"){
+        titlesObject.title = this.cardInfo.title;
+        titlesObject.original_title = this.cardInfo.original_title;
+      }
+      else{
+        titlesObject.title = this.cardInfo.name;
+        titlesObject.original_title = this.cardInfo.original_name;
+      }
+      return titlesObject;
     }
   }
 }

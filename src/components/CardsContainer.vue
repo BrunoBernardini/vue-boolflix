@@ -4,6 +4,7 @@
     <div class="card-wrapper">
       <CardItem 
         v-for="(card, index) in mediaList"
+        :mediaType="mediaType"
         :key="`${card}-${index}`"
         :cardInfo="card"/>
     </div>
