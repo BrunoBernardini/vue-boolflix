@@ -23,7 +23,20 @@
                     class="info"
                     :src="`https://flagcdn.com/16x12/${flagID}.png`"
                     :alt="cardInfo.original_language.toUpperCase()"><br>
-           Punteggio: <span class="info">{{cardInfo.vote_average}}</span> [{{cardInfo.vote_count}} voti]</p>
+           Punteggio: <span class="starsVote">
+                        <font-awesome-icon 
+                          v-for="nFull in starsVote.full"
+                          :key="`fullStar-${nFull}`"
+                          icon="fa-solid fa-star"/>
+                        <font-awesome-icon
+                          v-if="starsVote.half"
+                          icon="fa-solid fa-star-half-stroke"/>
+                        <font-awesome-icon
+                          v-for="nEmpty in starsVote.empty"
+                          :key="`emptyStar-${nEmpty}`"
+                          icon="fa-regular fa-star"/>
+                        <div class="starsInfo">{{cardInfo.vote_average/2}}/5 [{{cardInfo.vote_count}} voti]</div>
+                      </span></p>
         <p
           class="plot"
           v-if="cardInfo.overview">Trama:<br>{{cardInfo.overview}}</p>
@@ -31,6 +44,8 @@
     </div>
   </div>
 </template>
+
+<!-- <span class="info">{{cardInfo.vote_average}}</span> [{{cardInfo.vote_count}} voti] -->
 
 <script>
 export default {
@@ -41,13 +56,14 @@ export default {
   },
   data(){
     return{
-      active: false
+      active: false,
     }
   },
   computed: {
     flagID(){
       const flagAlias = {
         en: "gb",
+        ja: "jp",
       }
       if(this.cardInfo.original_language in flagAlias) return flagAlias[this.cardInfo.original_language];
       else return this.cardInfo.original_language;
@@ -61,11 +77,25 @@ export default {
         titlesObject.title = this.cardInfo.title;
         titlesObject.original_title = this.cardInfo.original_title;
       }
-      else{
+      else if(this.mediaType==="Serie TV"){
         titlesObject.title = this.cardInfo.name;
         titlesObject.original_title = this.cardInfo.original_name;
       }
       return titlesObject;
+    },
+    starsVote(){
+      const starsNumber = this.cardInfo.vote_average/2;
+      const starsVoteSpecs = {
+        full: 0,
+        empty: 0,
+        half: false
+      };
+      for(let i=0; i<5; i++){
+        if(i+1<starsNumber || starsNumber-i >= .85) starsVoteSpecs.full++;
+        else if(starsNumber-i >= .5) starsVoteSpecs.half=true;
+        else starsVoteSpecs.empty++;
+      }
+      return starsVoteSpecs;
     }
   }
 }
@@ -103,6 +133,27 @@ export default {
     font-weight: bolder;
     text-decoration: underline;
   }
+  .starsVote{
+    position: relative;
+    color: yellow;
+    text-shadow: 3px 3px 3px black;
+    cursor: pointer;
+    display: inline-block;
+    .starsInfo{
+      position: absolute;
+      bottom: -20px;
+      left: 10px;
+      width: max-content;
+      background-color: rgba(0, 0, 0, .5);
+      text-shadow: none;
+      padding: 1px 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    &:hover .starsInfo{
+      display: block;
+    }
+  }
   .card-inner{
     position: relative;
     width: 100%;
@@ -120,6 +171,7 @@ export default {
     -webkit-backface-visibility: hidden; /* Safari */
     backface-visibility: hidden;  
     border-radius: 10px;
+    word-break: break-word;
     background: linear-gradient(#bd1621, #56090f);
   }
   .card-front{
