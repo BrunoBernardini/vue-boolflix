@@ -57,7 +57,7 @@ export default {
   }
   h2,
   .card-wrapper{
-    padding-left: 70px;
+    padding: 0 70px;
   }
   h2{
     padding-top: 20px;
