@@ -7,9 +7,9 @@
       <select
         class="form-select form-select-sm media-type-select"
         @change="sendFilters">
-        <option selected value="">All</option>
+        <option selected value="">Tutti</option>
         <option value="film">Film</option>
-        <option value="series">TV Series</option>
+        <option value="series">Serie TV</option>
       </select>
     </div>
     <div class="left-header">
@@ -23,7 +23,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Cerca film e serie TV..."
+          :placeholder="`Cerca ${whatToSearch}`"
           v-model="titleToSearch"
           @keyup.enter="$emit('receiveString', titleToSearch)">
       </div>
@@ -58,6 +58,15 @@ export default {
         this.visibility.tv = true;
       }
       this.$emit("receiveFilters", this.visibility);
+    }
+  },
+  computed: {
+    whatToSearch(){
+      let whatToSearchString;
+      if(this.visibility.movie && this.visibility.tv) whatToSearchString = "film e serie TV";
+      else if(this.visibility.movie) whatToSearchString = "film";
+      else whatToSearchString = "serie TV";
+      return whatToSearchString += "...";
     }
   }
 }
