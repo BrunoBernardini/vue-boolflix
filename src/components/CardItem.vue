@@ -78,15 +78,18 @@ export default {
     return{
       active: false,
       castList: [],
-      genresList: []
+      genresList: [],
+      previousID: null
     }
   },
   methods: {
     getApiCast(){
-      if(this.castList.length===0){
+      if(this.previousID !== this.cardInfo.id){
+        this.previousID = this.cardInfo.id;
         axios.get(`https://api.themoviedb.org/3/${this.movieOrTv}/${this.cardInfo.id}/credits?api_key=${this.api_key}&language=${this.languageToCall}`)
           .then(cast=>{
             this.castList = cast.data.cast;
+            console.log(this.previousID);
           })
           .catch(err=>{
             console.log(err);
