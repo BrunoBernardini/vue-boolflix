@@ -23,9 +23,9 @@
         <p>
           Genere: <span
                     class="info"
-                    v-for="(genreID, index) in genresIDs"
-                    :key="`${cardInfo.id}-genre-${genreID}`">
-                    <span v-if="cardInfo.genre_ids.includes(genreID.id)">{{genreID.name}}<span v-if="index < (cardInfo.genre_ids.length-1)">, </span></span>
+                    v-for="(genre_id, index) in cardInfo.genre_ids"
+                    :key="`${cardInfo.id}-genre-${genre_id}`">
+                    {{matchGenre(genre_id, genresIDs)}}<span v-if="index < (cardInfo.genre_ids.length-1)">, </span>
                   </span><br>
           Lingua: <img
                     class="info"
@@ -35,7 +35,7 @@
                   class="info"
                   v-for="(castMember, index) in castList"
                   :key="`${castMember.id}-${castMember.cast_id}`">
-                  <span v-if="index < 5">{{castMember.name}}<span v-if="index < (castList.length-1)">, </span></span>
+                  <span v-if="index < 5">{{castMember.name}}<span v-if="index < Math.min((castList.length-1),4)">, </span></span>
                 </span><br>
           Punteggio: <span class="starsVote">
                         <font-awesome-icon 
@@ -92,6 +92,13 @@ export default {
             console.log(err);
           })
       }
+    },
+    matchGenre(genreID, genresList){
+      let genreName = "";
+      for(let genreObject of genresList){
+        if(genreObject.id===genreID) genreName = genreObject.name;
+      }
+      return genreName;
     }
   },
   computed: {
@@ -234,6 +241,7 @@ export default {
     overflow: auto;
     transform: rotateY(180deg);
     img{
+      margin-left: 3px;
       box-shadow: 2px 2px 10px black;
     }
   }

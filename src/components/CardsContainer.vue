@@ -34,7 +34,6 @@ export default {
 .card-container{
   position : relative;
   color: white;
-  // padding-bottom: 10px;
   &::before{
     content: "";
     position: absolute;
