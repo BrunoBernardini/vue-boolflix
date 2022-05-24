@@ -6,7 +6,8 @@
     <div class="card-inner">
       <div 
         class="card-front"
-        @click="active = !active; getApiCast()">
+        @click="active = !active;
+                getApiCast()">
         <img
           v-if="cardInfo.poster_path"
           :src="`https://image.tmdb.org/t/p/w300/${cardInfo.poster_path}`"
@@ -19,17 +20,24 @@
         <h4>{{titlesContainer.title}}</h4>
         <p
           v-if="titlesContainer.title !== titlesContainer.original_title">Titolo originale: <span class="info">{{titlesContainer.original_title}}</span></p>
-        <p>Lingua: <img
+        <p>
+          Genere: <span
+                    class="info"
+                    v-for="(genreID, index) in genresIDs"
+                    :key="`${cardInfo.id}-genre-${genreID}`">
+                    <span v-if="cardInfo.genre_ids.includes(genreID.id)">{{genreID.name}}<span v-if="index < (cardInfo.genre_ids.length-1)">, </span></span>
+                  </span><br>
+          Lingua: <img
                     class="info"
                     :src="`https://flagcdn.com/16x12/${flagID}.png`"
                     :alt="cardInfo.original_language.toUpperCase()"><br>
-           Cast: <span
+          Cast: <span
                   class="info"
                   v-for="(castMember, index) in castList"
                   :key="`${castMember.id}-${castMember.cast_id}`">
-                  <span v-if="index < 5">{{castMember.name}}<span v-if="index < 4">, </span></span>
-                 </span><br>
-           Punteggio: <span class="starsVote">
+                  <span v-if="index < 5">{{castMember.name}}<span v-if="index < (castList.length-1)">, </span></span>
+                </span><br>
+          Punteggio: <span class="starsVote">
                         <font-awesome-icon 
                           v-for="nFull in starsVote.full"
                           :key="`fullStar-${nFull}`"
@@ -42,7 +50,8 @@
                           :key="`emptyStar-${nEmpty}`"
                           icon="fa-regular fa-star"/>
                         <div class="starsInfo">{{cardInfo.vote_average/2}}/5 [{{cardInfo.vote_count}} voti]</div>
-                      </span></p>
+                      </span>
+        </p>
         <p
           class="plot"
           v-if="cardInfo.overview">Trama:<br>{{cardInfo.overview}}</p>
@@ -60,25 +69,24 @@ export default {
   name: "CardItem",
   props: {
     api_key: String,
+    languageToCall: String,
     mediaType: String,
-    cardInfo: Object
+    cardInfo: Object,
+    genresIDs: Array
   },
   data(){
     return{
       active: false,
       castList: [],
+      genresList: []
     }
   },
   methods: {
     getApiCast(){
-      let movieOrTv = "";
-      if(this.mediaType==="Film") movieOrTv = "movie";
-      else movieOrTv = "tv";
       if(this.castList.length===0){
-        axios.get(`https://api.themoviedb.org/3/${movieOrTv}/${this.cardInfo.id}/credits?api_key=${this.api_key}`)
+        axios.get(`https://api.themoviedb.org/3/${this.movieOrTv}/${this.cardInfo.id}/credits?api_key=${this.api_key}&language=${this.languageToCall}`)
           .then(cast=>{
             this.castList = cast.data.cast;
-            console.log(this.castList);
           })
           .catch(err=>{
             console.log(err);
@@ -94,6 +102,10 @@ export default {
       }
       if(this.cardInfo.original_language in flagAlias) return flagAlias[this.cardInfo.original_language];
       else return this.cardInfo.original_language;
+    },
+    movieOrTv(){
+      if(this.mediaType==="Film") return "movie";
+      else return "tv";
     },
     titlesContainer(){
       const titlesObject = {

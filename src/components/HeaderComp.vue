@@ -7,7 +7,7 @@
       <select
         class="form-select form-select-sm media-type-select"
         @change="sendFilters">
-        <option selected value="">Tutti</option>
+        <option selected value="">Film e serie TV</option>
         <option value="film">Film</option>
         <option value="series">Serie TV</option>
       </select>

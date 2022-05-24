@@ -6,8 +6,10 @@
         v-for="(card, index) in mediaList"
         :key="`${card}-${index}`"
         :api_key="api_key"
+        :languageToCall="languageToCall"
         :mediaType="mediaType"
-        :cardInfo="card"/>
+        :cardInfo="card"
+        :genresIDs="genresIDs"/>
     </div>
   </div>
 </template>
@@ -20,8 +22,10 @@ export default {
   components: { CardItem },
   props: {
     api_key: String,
+    languageToCall: String,
     mediaType: String,
-    mediaList: Array
+    mediaList: Array,
+    genresIDs: Array
   }
 }
 </script>

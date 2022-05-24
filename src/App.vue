@@ -6,13 +6,17 @@
     <CardsContainer
       v-if="filters.movie && medias.movie.length > 0"
       :api_key="api_key"
+      :languageToCall="apiParams.language"
       mediaType="Film"
-      :mediaList="medias.movie"/>
+      :mediaList="medias.movie"
+      :genresIDs="genresLists.movie"/>
     <CardsContainer
       v-if="filters.tv && medias.tv.length > 0"
       :api_key="api_key"
+      :languageToCall="apiParams.language"
       mediaType="Serie TV"
-      :mediaList="medias.tv"/>
+      :mediaList="medias.tv"
+      :genresIDs="genresLists.tv"/>
   </div>
 </template>
 
@@ -47,14 +51,20 @@ export default {
       filters: {
         movie: true,
         tv: true
-      }
+      },
+      genresLists: {
+        movie: [],
+        tv: []
+      },
+      fullGenresList: []
     }
   },
   mounted(){
-    this.getApi();
+    this.getApiMoviesAndTv();
+    this.getApiGenres();
   },
   methods: {
-    getApi(){
+    getApiMoviesAndTv(){
       let actionIndex = 0, afterMedia = "";
       if(this.apiParams.query === "") afterMedia = "/day";
       else actionIndex = 1;
@@ -69,10 +79,22 @@ export default {
           })
       }
     },
+    getApiGenres(){
+      for(let listGenreType in this.genresLists){
+        axios.get(`https://api.themoviedb.org/3/genre/${listGenreType}/list?api_key=${this.api_key}&language=${this.apiParams.language}`)
+          .then(genres=>{
+            this.genresLists[listGenreType] = genres.data.genres;
+            console.log(this.genresLists[listGenreType]);
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+      }
+    },
     searchQuery(query){
       this.previousQuery = this.apiParams.query;
       this.apiParams.query = query.trim();
-      if(this.previousQuery !== this.apiParams.query) this.getApi();
+      if(this.previousQuery !== this.apiParams.query) this.getApiMoviesAndTv();
     },
     applyFilters(filtersObject){
       this.filters = filtersObject;
