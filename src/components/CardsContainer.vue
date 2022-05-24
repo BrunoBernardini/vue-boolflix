@@ -28,7 +28,7 @@ export default {
 .card-container{
   position : relative;
   color: white;
-  padding-bottom: 50px;
+  // padding-bottom: 10px;
   &::before{
     content: "";
     position: absolute;
@@ -61,7 +61,7 @@ export default {
     padding: 0 70px;
   }
   h2{
-    padding-top: 20px;
+    padding-top: 19px;
     font-weight: bolder;
   }
   .card-wrapper{

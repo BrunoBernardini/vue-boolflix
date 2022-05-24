@@ -4,8 +4,10 @@
       <a href="#" class="logo">
         <img src="../assets/img/ca3caecece4b4a8cacaf3296fe1c0fc6.png" alt="">
       </a>
-      <select class="form-select form-select-sm media-type-select">
-        <option selected value="all">All</option>
+      <select
+        class="form-select form-select-sm media-type-select"
+        @change="sendFilters">
+        <option selected value="">All</option>
         <option value="film">Film</option>
         <option value="series">TV Series</option>
       </select>
@@ -35,6 +37,27 @@ export default {
   data(){
     return{
       titleToSearch: "",
+      visibility: {
+        movie: true,
+        tv: true
+      }
+    }
+  },
+  methods: {
+    sendFilters(filterOption){
+      if(filterOption.target.value === "film"){
+        this.visibility.movie = true;
+        this.visibility.tv = false;
+      }
+      else if(filterOption.target.value === "series"){
+        this.visibility.movie = false;
+        this.visibility.tv = true;
+      }
+      else{
+        this.visibility.movie = true;
+        this.visibility.tv = true;
+      }
+      this.$emit("receiveFilters", this.visibility);
     }
   }
 }
@@ -49,7 +72,7 @@ header{
   justify-content: space-between;
   align-items: center;
   padding: 0 70px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   width: 100%;
   height: 85px;
   background-color: black;

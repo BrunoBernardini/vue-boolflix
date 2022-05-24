@@ -91,7 +91,7 @@ export default {
         half: false
       };
       for(let i=0; i<5; i++){
-        if(i+1<starsNumber || starsNumber-i >= .85) starsVoteSpecs.full++;
+        if(i+1<starsNumber || starsNumber-i > .85) starsVoteSpecs.full++;
         else if(starsNumber-i >= .5) starsVoteSpecs.half=true;
         else starsVoteSpecs.empty++;
       }
