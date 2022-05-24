@@ -4,8 +4,9 @@
     <div class="card-wrapper">
       <CardItem 
         v-for="(card, index) in mediaList"
-        :mediaType="mediaType"
         :key="`${card}-${index}`"
+        :api_key="api_key"
+        :mediaType="mediaType"
         :cardInfo="card"/>
     </div>
   </div>
@@ -18,6 +19,7 @@ export default {
   name: "CardContainer",
   components: { CardItem },
   props: {
+    api_key: String,
     mediaType: String,
     mediaList: Array
   }

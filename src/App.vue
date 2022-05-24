@@ -4,11 +4,13 @@
       @receiveString="searchQuery"
       @receiveFilters="applyFilters"/>
     <CardsContainer
-      v-if="filters.movie"
+      v-if="filters.movie && medias.movie.length > 0"
+      :api_key="api_key"
       mediaType="Film"
       :mediaList="medias.movie"/>
     <CardsContainer
-      v-if="filters.tv"
+      v-if="filters.tv && medias.tv.length > 0"
+      :api_key="api_key"
       mediaType="Serie TV"
       :mediaList="medias.tv"/>
   </div>

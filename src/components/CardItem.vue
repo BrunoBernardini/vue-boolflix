@@ -6,7 +6,7 @@
     <div class="card-inner">
       <div 
         class="card-front"
-        @click="active = !active">
+        @click="active = !active; getApiCast()">
         <img
           v-if="cardInfo.poster_path"
           :src="`https://image.tmdb.org/t/p/w300/${cardInfo.poster_path}`"
@@ -23,6 +23,12 @@
                     class="info"
                     :src="`https://flagcdn.com/16x12/${flagID}.png`"
                     :alt="cardInfo.original_language.toUpperCase()"><br>
+           Cast: <span
+                  class="info"
+                  v-for="(castMember, index) in castList"
+                  :key="`${castMember.id}-${castMember.cast_id}`">
+                  <span v-if="index < 5">{{castMember.name}}<span v-if="index < 4">, </span></span>
+                 </span><br>
            Punteggio: <span class="starsVote">
                         <font-awesome-icon 
                           v-for="nFull in starsVote.full"
@@ -48,15 +54,36 @@
 <!-- <span class="info">{{cardInfo.vote_average}}</span> [{{cardInfo.vote_count}} voti] -->
 
 <script>
+import axios from "axios";
+
 export default {
   name: "CardItem",
   props: {
+    api_key: String,
     mediaType: String,
     cardInfo: Object
   },
   data(){
     return{
       active: false,
+      castList: [],
+    }
+  },
+  methods: {
+    getApiCast(){
+      let movieOrTv = "";
+      if(this.mediaType==="Film") movieOrTv = "movie";
+      else movieOrTv = "tv";
+      if(this.castList.length===0){
+        axios.get(`https://api.themoviedb.org/3/${movieOrTv}/${this.cardInfo.id}/credits?api_key=${this.api_key}`)
+          .then(cast=>{
+            this.castList = cast.data.cast;
+            console.log(this.castList);
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+      }
     }
   },
   computed: {
@@ -131,7 +158,6 @@ export default {
   }
   .info{
     font-weight: bolder;
-    text-decoration: underline;
   }
   .starsVote{
     position: relative;
