@@ -1,7 +1,10 @@
 <template>
   <header>
     <div class="right-header">
-      <a href="#" class="logo">
+      <a 
+        href="#"
+        class="logo"
+        @click="$emit('receiveString', ''); titleToSearch = ''">
         <img src="../assets/img/ca3caecece4b4a8cacaf3296fe1c0fc6.png" alt="">
       </a>
       <select
@@ -73,22 +76,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/style/vars";
-@import "../assets/style/general";
-
 header{
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   padding: 0 70px;
   margin-bottom: 20px;
   width: 100%;
-  height: 85px;
+  min-height: 85px;
   background-color: black;
   .right-header,
   .left-header{
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    a,
+    select,
+    div{
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
   }
   .logo{
     display: block;

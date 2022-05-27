@@ -6,7 +6,7 @@
     <div class="card-inner">
       <div 
         class="card-front"
-        @click="active = !active;
+        @click="active = true;
                 getApiCast()">
         <img
           v-if="cardInfo.poster_path"
@@ -16,7 +16,8 @@
       </div>
       <div
         class="card-back"
-        @mouseleave="active = !active">
+        @click="active = false"
+        @mouseleave="active = false">
         <h4>{{titlesContainer.title}}</h4>
         <p
           v-if="titlesContainer.title !== titlesContainer.original_title">Titolo originale: <span class="info">{{titlesContainer.original_title}}</span></p>
@@ -36,7 +37,10 @@
                   v-for="(castMember, index) in castList"
                   :key="`${castMember.id}-${castMember.cast_id}`">
                   <span v-if="index < 5">{{castMember.name}}<span v-if="index < Math.min((castList.length-1),4)">, </span></span>
-                </span><br>
+                </span>
+                <span
+                  v-if="castList.length === 0"
+                  class="info">N/A</span><br>
           Punteggio: <span class="starsVote">
                         <font-awesome-icon 
                           v-for="nFull in starsVote.full"
@@ -70,7 +74,6 @@ export default {
   props: {
     api_key: String,
     languageToCall: String,
-    mediaType: String,
     cardInfo: Object,
     genresIDs: Array
   },
@@ -78,7 +81,6 @@ export default {
     return{
       active: false,
       castList: [],
-      genresList: [],
       previousID: null
     }
   },
@@ -114,7 +116,7 @@ export default {
       else return this.cardInfo.original_language;
     },
     movieOrTv(){
-      if(this.mediaType==="Film") return "movie";
+      if('title' in this.cardInfo) return "movie";
       else return "tv";
     },
     titlesContainer(){
@@ -122,11 +124,11 @@ export default {
         title: "",
         original_title: ""
       }
-      if(this.mediaType==="Film"){
+      if('title' in this.cardInfo){
         titlesObject.title = this.cardInfo.title;
         titlesObject.original_title = this.cardInfo.original_title;
       }
-      else if(this.mediaType==="Serie TV"){
+      else if('name' in this.cardInfo){
         titlesObject.title = this.cardInfo.name;
         titlesObject.original_title = this.cardInfo.original_name;
       }
@@ -141,7 +143,7 @@ export default {
       };
       for(let i=0; i<5; i++){
         if(i+1<starsNumber || starsNumber-i > .85) starsVoteSpecs.full++;
-        else if(starsNumber-i >= .5) starsVoteSpecs.half=true;
+        else if(starsNumber-i >= .3) starsVoteSpecs.half=true;
         else starsVoteSpecs.empty++;
       }
       return starsVoteSpecs;
@@ -220,6 +222,7 @@ export default {
     backface-visibility: hidden;  
     border-radius: 10px;
     word-break: break-word;
+    cursor: pointer;
     background: linear-gradient(#bd1621, #56090f);
   }
   .card-front{
@@ -228,7 +231,6 @@ export default {
     align-items: center;
     text-align: center;
     overflow: hidden;
-    cursor: pointer;
     h2{
       padding: 10px;
     }

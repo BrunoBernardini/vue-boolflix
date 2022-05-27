@@ -4,10 +4,9 @@
     <div class="card-wrapper">
       <CardItem 
         v-for="(card, index) in mediaList"
-        :key="`${card}-${index}`"
+        :key="`cardContainer-${card}-${index}`"
         :api_key="api_key"
         :languageToCall="languageToCall"
-        :mediaType="mediaType"
         :cardInfo="card"
         :genresIDs="genresIDs"/>
     </div>
